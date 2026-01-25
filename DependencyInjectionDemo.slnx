@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DependencyInjectionDemo.NetFrameworkWinForm/DependencyInjectionDemo.NetFrameworkWinForm.csproj" Id="9223562e-c90c-4587-8faa-53a312e54a3a" />
+  <Project Path="DependencyInjectionDemo.Scenarios/DependencyInjectionDemo.Scenarios.csproj" Id="33d3b777-1d12-4155-86bf-770bb8c60100" />
+</Solution>
