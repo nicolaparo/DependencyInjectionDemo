@@ -34,10 +34,10 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
     public void Register_With_AddSingleton()
     {
         ServiceCollection services = new ServiceCollection();
-        services.AddTransient<IGreetingService, AliceGreetingService>();
-        services.AddSingleton<IGreetingService, BobGreetingService>();
+        services.AddSingleton<IGreetingService, AliceGreetingService>();
         services.AddSingleton<IGreetingService, ChrisGreetingService>();
-
+        services.AddSingleton<IGreetingService, BobGreetingService>();
+        
         var serviceProvider = services.BuildServiceProvider();
 
         var greetingService = serviceProvider.GetRequiredService<IGreetingService>();
@@ -64,6 +64,8 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
         output.WriteLine(message);
     }
 
+
+
     [Fact]
     public void RegisterMultiple_With_AddSingleton_And_ResolveAll()
     {
@@ -73,7 +75,7 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
         services.AddSingleton<IGreetingService, ChrisGreetingService>();
 
         var serviceProvider = services.BuildServiceProvider();
-        var greetingServices = serviceProvider.GetServices<IGreetingService>();
+        var greetingServices = serviceProvider.GetRequiredService<IEnumerable<IGreetingService>>();
 
         foreach (var service in greetingServices)
         {
@@ -92,7 +94,7 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
         services.TryAddSingleton<IGreetingService, ChrisGreetingService>();
 
         var serviceProvider = services.BuildServiceProvider();
-        var greetingServices = serviceProvider.GetServices<IGreetingService>();
+        var greetingServices = serviceProvider.GetRequiredService<IEnumerable<IGreetingService>>();
 
         foreach (var service in greetingServices)
         {
@@ -105,7 +107,7 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
     public void Register_With_AddKeyedSingleton()
     {
         ServiceCollection services = new ServiceCollection();
-        services.AddKeyedTransient<IGreetingService, AliceGreetingService>("alice");
+        services.AddKeyedSingleton<IGreetingService, AliceGreetingService>("alice");
         services.AddKeyedSingleton<IGreetingService, BobGreetingService>("bob");
         services.AddKeyedSingleton<IGreetingService, ChrisGreetingService>("chris");
 
@@ -154,7 +156,7 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
         // var serviceProvider = services.BuildServiceProvider(validateScopes: true);
         var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions()
         {
-            //ValidateOnBuild = true,
+            ValidateOnBuild = true,
             ValidateScopes = true
         });
 
@@ -190,4 +192,26 @@ public class MultipleRegistrationScenarios(ITestOutputHelper output)
     }
 
 
+
+    public class GreetingConsumerWithExtraParam(IGreetingService greetingService, string prefix = "HELLO")
+    {
+        public string Greet(string name) => $"{prefix}: {greetingService.GetGreetingMessageFor(name)}";
+    }
+
+    [Fact]
+    public void Register_With_ActivatorUtilities()
+    {
+        ServiceCollection services = new ServiceCollection();
+        services.AddSingleton<IGreetingService, AliceGreetingService>();
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        // Create instance with mixed constructor parameters: some from DI, some provided directly
+        var consumer = ActivatorUtilities.CreateInstance<GreetingConsumerWithExtraParam>(
+            serviceProvider);
+
+        var message = consumer.Greet("John");
+
+        output.WriteLine(message);
+    }
 }
