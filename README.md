@@ -8,6 +8,25 @@ This solution contains practical examples of Microsoft.Extensions.DependencyInje
 
 ## 🏗️ Projects
 
+### DependencyInjectionDemo.NetFrameworkAspNet
+
+A .NET Framework ASP.NET Web API application demonstrating dependency injection in a legacy ASP.NET Framework context.
+
+**Key Features:**
+- Integration of `Microsoft.Extensions.DependencyInjection` in .NET Framework 4.x Web API
+- Custom dependency resolver bridging Microsoft.Extensions.DI with Web API
+- Service lifetime management (Scoped services for Web API)
+- Controller injection through custom DI resolver
+- RESTful API endpoints with injected services
+
+**Components:**
+- `Global.asax.cs` - Application entry point with DI container setup
+- `WebApiDependencyResolver.cs` - Custom IDependencyResolver implementation for Web API
+- `ServiceCollectionExtensions.cs` - Extension methods for controller registration
+- `ValuesController.cs` - Web API controller with constructor injection
+- `ValuesService.cs` - Example service registered as scoped
+- `IValuesService.cs` - Service abstraction interface
+
 ### DependencyInjectionDemo.NetFrameworkWinForm
 
 A .NET Framework Windows Forms application demonstrating dependency injection in a legacy WinForms context.
@@ -46,6 +65,18 @@ A .NET 10.0 test project containing unit tests that demonstrate various dependen
 - .NET Framework 4.7.2+ (for WinForms project)
 - .NET 10.0 SDK (for Scenarios project)
 
+### Running the ASP.NET Web API Application
+
+1. Open `DependencyInjectionDemo.slnx` in Visual Studio
+2. Set `DependencyInjectionDemo.NetFrameworkAspNet` as the startup project
+3. Press F5 to run
+
+The application demonstrates:
+- Dependency injection in ASP.NET Web API controllers
+- Custom dependency resolver integration
+- Scoped service lifetime in web requests
+- RESTful API with GET, POST, PUT, DELETE endpoints
+
 ### Running the WinForms Application
 
 1. Open `DependencyInjectionDemo.slnx` in Visual Studio
@@ -70,6 +101,13 @@ The application demonstrates:
 - `Microsoft.Extensions.DependencyInjection.Abstractions` (10.0.2)
 - `Microsoft.Extensions.Hosting` (10.0.2) - for host scenarios
 
+### Web Dependencies (ASP.NET Project)
+- `Microsoft.AspNet.WebApi` (5.2.9)
+- `Microsoft.AspNet.WebApi.Core` (5.2.9)
+- `Microsoft.AspNet.WebApi.WebHost` (5.2.9)
+- `Microsoft.AspNet.Mvc` (5.2.9)
+- `Newtonsoft.Json` (13.0.3)
+
 ### Supporting Libraries
 - `Microsoft.Bcl.AsyncInterfaces` (10.0.2)
 - `System.Runtime.CompilerServices.Unsafe` (6.1.2)
@@ -83,6 +121,17 @@ The application demonstrates:
 - **Scoped** - One instance per scope (demonstrated in scenarios)
 
 ### DI Container Setup
+
+**ASP.NET Web API:**
+```csharp
+var services = new ServiceCollection();
+services.AddControllers();
+services.AddScoped<IValuesService, ValuesService>();
+var serviceProvider = services.BuildServiceProvider();
+GlobalConfiguration.Configuration.DependencyResolver = new WebApiDependencyResolver(serviceProvider);
+```
+
+**WinForms:**
 ```csharp
 var services = new ServiceCollection();
 services.AddSingleton<GreetingService>();
@@ -105,9 +154,11 @@ The Scenarios project uses **xUnit** for unit testing and demonstrates:
 
 ## 📝 Notes
 
+- The ASP.NET Web API project shows how to integrate Microsoft.Extensions.DependencyInjection with legacy ASP.NET Framework Web API
 - The WinForms project shows how to modernize legacy .NET Framework applications with DI
 - The Scenarios project provides test cases that can serve as documentation for common DI patterns
-- Both projects use the same DI abstractions, showing cross-platform compatibility
+- All projects use the same DI abstractions, showing cross-platform compatibility
+- Custom dependency resolvers bridge the gap between Microsoft.Extensions.DI and older .NET Framework DI systems
 
 ## 🤝 Contributing
 
