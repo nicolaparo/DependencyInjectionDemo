@@ -19,6 +19,7 @@ namespace DependencyInjectionDemo.NetFrameworkAspNet.Controllers
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
+            ViewBag.Values = valuesService.GetValues();
 
             return View();
         }
