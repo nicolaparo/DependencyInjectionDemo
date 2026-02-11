@@ -180,7 +180,7 @@
     <Compile Include="ServiceCollectionExtensions.cs" />
     <Compile Include="ServiceProviderDependencyResolver.cs" />
     <Compile Include="Services\ValuesService.cs" />
-    <Compile Include="WebApiDependencyResolver.cs" />
+    <Compile Include="ServiceProviderDependencyResolverAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

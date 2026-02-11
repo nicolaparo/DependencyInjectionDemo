@@ -7,17 +7,18 @@ using System.Web.Http.Dependencies;
 
 namespace DependencyInjectionDemo.NetFrameworkAspNet
 {
-    public class WebApiDependencyResolver : IDependencyResolver
+    public class ServiceProviderDependencyResolverAdapter : IDependencyResolver
+        , System.Web.Mvc.IDependencyResolver
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IServiceScope scope;
 
-        public WebApiDependencyResolver(IServiceProvider serviceProvider)
+        public ServiceProviderDependencyResolverAdapter(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
-        private WebApiDependencyResolver(IServiceScope scope)
+        private ServiceProviderDependencyResolverAdapter(IServiceScope scope)
         {
             this.scope = scope;
             serviceProvider = scope.ServiceProvider;
@@ -36,7 +37,7 @@ namespace DependencyInjectionDemo.NetFrameworkAspNet
 
         public IDependencyScope BeginScope()
         {
-            return new WebApiDependencyResolver(serviceProvider.CreateScope());
+            return new ServiceProviderDependencyResolverAdapter(serviceProvider.CreateScope());
         }
 
         public void Dispose()
