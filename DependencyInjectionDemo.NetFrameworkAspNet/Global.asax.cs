@@ -23,7 +23,7 @@ namespace DependencyInjectionDemo.NetFrameworkAspNet
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var dependencyResolver = new ServiceProviderDependencyResolverAdapter(serviceProvider);
+            var dependencyResolver = new ServiceProviderDependencyResolver(serviceProvider);
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(config => WebApiConfig.Register(config, dependencyResolver));
